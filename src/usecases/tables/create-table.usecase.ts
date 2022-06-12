@@ -1,0 +1,18 @@
+import { IUseCase } from "@core/usecase";
+import { Result } from "src/core/result";
+import { inject, singleton } from "tsyringe";
+import { ITableService, TableService } from "@services/tables/tables.service";
+import { ITableRequest } from "./tableDTO";
+import { Tables } from "@prisma/client";
+
+export type ITableCreateUseCase = IUseCase<ITableRequest, Tables>;
+
+@singleton<ITableCreateUseCase>()
+export class TableCreateUseCase implements ITableCreateUseCase {
+  constructor(@inject(TableService) private tableService: ITableService) {}
+
+  async execute(data: ITableRequest): Promise<Result<Tables>> {
+    const table = (await this.tableService.create(data)).getValue();
+    return Result.ok(table);
+  }
+}

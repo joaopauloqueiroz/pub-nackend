@@ -1,12 +1,12 @@
-import "dotenv/config";
-import grpc from "grpc";
+import "reflect-metadata";
+import { container } from "tsyringe";
+import { App, IAppFactory } from "./lib/app";
+async function startServer(): Promise<void> {
+  const appInstance = container.resolve<IAppFactory>(App);
+  const port = process.env.APP_PORT || "3000";
 
-const server = new grpc.Server();
-server.bindAsync(
-  `0.0.0.0:${process.env.APP_PORT}`,
-  grpc.ServerCredentials.createInsecure(),
-  (error, port) => {
-    server.start();
-    console.log(`Server is runing => 0.0.0.0:${process.env.APP_PORT}`);
-  }
-);
+  const serverInstance = await appInstance.build();
+  await serverInstance.listen(port);
+}
+
+startServer();

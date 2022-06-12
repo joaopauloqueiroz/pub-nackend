@@ -1,8 +1,8 @@
 version: '3.7'
 services:
   app:
-    image: node:12.22.9
-    container_name: payments_app
+    image: node:16.4.2-alpine
+    container_name: payments_service
     working_dir: /usr/src/app
     env_file:
       - .env
@@ -10,12 +10,12 @@ services:
       db:
         condition: service_started
     ports:
-      - '50051:50051'
+      - '3333:3333'
     volumes:
       - .:/usr/src/app
     links:
       - db:db
-    entrypoint: bash -c ./start.sh
+    command: sh -c "./start.sh"
   db:
     image: postgres:latest
     container_name: db_payments
