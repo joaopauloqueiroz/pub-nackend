@@ -9,6 +9,7 @@ export interface IProductService {
   create(data: IProductRequest): Promise<Result<Products>>;
   findOne(id: string): Promise<Result<Products>>;
   findAll(cursor?: string, take?: number): Promise<Result<Products[]>>;
+  search(name: string): Promise<Result<Products[]>>;
 }
 
 @singleton<IProductService>()
@@ -62,6 +63,22 @@ export class ProductService implements IProductService {
       return Result.ok(products);
     } catch (error) {
       this.logger.error(`::ProductService::create - ${error.message}`);
+      return Result.fail(ErrorCode.ERROR_FINDING_PRODUCT);
+    }
+  }
+
+  async search(name: string): Promise<Result<Products[]>> {
+    try {
+      const products = await this.client.products.findMany({
+        where: {
+          name: {
+            contains: name,
+            mode: "insensitive",
+          },
+        },
+      });
+      return Result.ok(products);
+    } catch (error) {
       return Result.fail(ErrorCode.ERROR_FINDING_PRODUCT);
     }
   }

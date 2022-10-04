@@ -17,12 +17,17 @@ import {
   IPagination,
   IProductAllUseCase,
 } from "@usecases/products/find-all-products.usecase";
+import {
+  IProductSearchUseCase,
+  ProductSearchUseCase,
+} from "src/usecases/products/find-by-search-product.usecase";
 
 @Controller("/products")
 export default class UserController {
   private readonly productCreateUseCase: IProductCreateUseCase;
   private readonly productFindByIdUseCase: IProductFindByIdUseCase;
   private readonly findProductAllUseCase: IProductAllUseCase;
+  private readonly searchProductUseCase: IProductSearchUseCase;
 
   constructor() {
     this.productCreateUseCase =
@@ -34,6 +39,9 @@ export default class UserController {
     this.findProductAllUseCase = container.resolve<IProductAllUseCase>(
       FindProductAllUseCase
     );
+
+    this.searchProductUseCase =
+      container.resolve<IProductSearchUseCase>(ProductSearchUseCase);
   }
 
   @Authorization
@@ -60,6 +68,14 @@ export default class UserController {
     const response = await this.findProductAllUseCase.execute(
       req.query as IPagination
     );
+    response.send(201, res);
+  }
+
+  @Authorization
+  @GET("/search/:name")
+  async handleSearch(req: FastifyRequest, res: FastifyReply) {
+    const { name } = req.params as any;
+    const response = await this.searchProductUseCase.execute(name as string);
     response.send(201, res);
   }
 }

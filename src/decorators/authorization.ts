@@ -36,7 +36,8 @@ export const Authorization = (
     }
 
     const map = new Map();
-    map.set("session", result.getValue()?.data);
+
+    map.set("session", { user: result.getValue() });
 
     context.run(map, () => {
       result = originalMethod.apply(this, args);

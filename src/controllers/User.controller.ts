@@ -33,6 +33,12 @@ export default class UserController {
   @POST("/auth", { schema: { body: UserAuthSchema } })
   async handlerUserAuth(req: FastifyRequest, res: FastifyReply) {
     const response = await this.userAuth.execute(req.body as IUserAuthRequest);
-    response.send(200, res);
+    return response.send(200, res);
+  }
+
+  @POST("/forget-password")
+  async handleForgetPassword(req: FastifyRequest, res: FastifyReply) {
+    const response = await this.userAuth.execute(req.body as IUserAuthRequest);
+    return response.send(200, res);
   }
 }

@@ -48,12 +48,15 @@ export class AuthUserUseCase implements IAuthUserUseCase {
       await this.findUserByEmail.execute({ email: data.email })
     ).getValue();
     if (!user) return Result.fail(ErrorCode.NOT_FOUND_USER_ERROR);
+
     const isAuthUser = await this.validatePasswordUser.execute({
       password: data.password,
       passwordHash: user.password,
     });
 
-    if (!isAuthUser) return Result.fail(ErrorCode.UNAUTHORIZED_ERROR);
+    if (!isAuthUser.getValue())
+      return Result.fail(ErrorCode.UNAUTHORIZED_ERROR);
+
     const accessToken = (
       await this.generateTokenUseCase.execute(user)
     ).getValue() as string;

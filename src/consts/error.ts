@@ -71,7 +71,7 @@ export enum ErrorCode {
   ERROR_GET_PAYMENT_INFO = 400,
   INTERNAL_SERVER_ERROR = 500,
   LEGAL_RESPONSIBLE_FOUND = 302,
-  ERROR_DELETING_DOCUMENT = 400,
+  ERROR_DELETING_ORDERITEM = 400,
   UPDATE_DOCUMENT_GCP = 400,
   ERROR_DOWNLOAD_FILE_CLICKSIGN = 400,
   WEBHOOK_ERROR = 400,
@@ -80,6 +80,7 @@ export enum ErrorCode {
   ERROR_FINDING_PRODUCT = 400,
   ERROR_CREATING_TABLE = 400,
   ERROR_FINDING_TABLE = 400,
+  ERROR_CHECKING_TABLE = 400,
 }
 
 export const ErrorMap = {
@@ -296,9 +297,9 @@ export const ErrorMap = {
     status: 500,
     message: "An unexpected error occurred on server side",
   },
-  [ErrorCode.ERROR_DELETING_DOCUMENT]: {
+  [ErrorCode.ERROR_DELETING_ORDERITEM]: {
     status: 400,
-    message: "Error deleting document",
+    message: "Error deleting orderItem",
   },
   [ErrorCode.GET_CONTACTS_BY_EMAIL_FROM_HUBSPOT_ERROR]: {
     status: 500,
@@ -412,6 +413,10 @@ export const ErrorMap = {
   [ErrorCode.ERROR_FINDING_TABLE]: {
     status: 400,
     message: "Error finding table",
+  },
+  [ErrorCode.ERROR_CHECKING_TABLE]: {
+    status: 400,
+    message: "Table already used",
   },
 };
 

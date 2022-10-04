@@ -8,13 +8,13 @@ import fastifyCors from "fastify-cors";
 import { bootstrap } from "fastify-decorators";
 import fastifyFormBody from "fastify-formbody";
 import { fastifyHelmet } from "fastify-helmet";
-import fastifyMultipart from "fastify-multipart";
 import { IncomingMessage, Server, ServerResponse } from "http";
 import { ValidatorResult } from "jsonschema";
 import middie from "middie";
 import { resolve } from "path";
 import { inject, singleton } from "tsyringe";
 import { v4 as uuidv4 } from "uuid";
+import swagger from "fastify-swagger";
 
 export type FastifyServer = FastifyInstance<
   Server,
@@ -78,10 +78,50 @@ export class App implements IAppFactory {
   }
 
   private async registerAll(): Promise<void> {
-    this.server.setSerializerCompiler((schema) => Ajv.compile(schema));
     await this.server.register(middie);
     await this.server.register(fastifyCors);
     await this.server.register(fastifyHelmet);
+    await this.server.register(swagger, {
+      routePrefix: "/documentation",
+      swagger: {
+        info: {
+          title: "Test swagger",
+          description: "Testing the Fastify swagger API",
+          version: "0.1.0",
+        },
+        externalDocs: {
+          url: "https://swagger.io",
+          description: "Find more info here",
+        },
+        host: "localhost",
+        schemes: ["http"],
+        consumes: ["application/json"],
+        produces: ["application/json"],
+        tags: [{ name: "Orders", description: "Code related end-points" }],
+        securityDefinitions: {
+          apiKey: {
+            type: "apiKey",
+            name: "apiKey",
+            in: "header",
+          },
+        },
+      },
+      uiConfig: {
+        docExpansion: "full",
+        deepLinking: false,
+      },
+      uiHooks: {
+        onRequest: function (request, reply, next) {
+          next();
+        },
+        preHandler: function (request, reply, next) {
+          next();
+        },
+      },
+      staticCSP: true,
+      transformStaticCSP: (header) => header,
+      exposeRoute: true,
+    });
     // await this.server.register(fastifyMultipart, { attachFieldsToBody: true });
     await this.server.register(fastifyFormBody);
   }

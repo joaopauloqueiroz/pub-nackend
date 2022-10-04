@@ -38,9 +38,9 @@ export class Result<T> {
 
   public send(code: number, res: any): any {
     if (this.isFailure) {
-      res.send(this.getError());
+      return res.send(this.getError());
     } else {
-      res.code(code).send(this._value);
+      return res.code(code).send(this._value);
     }
   }
 
